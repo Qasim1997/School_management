@@ -1,0 +1,15 @@
+a.add_button {
+    text-decoration: none;
+    color: white;
+}
+a.link {
+    text-decoration: none;
+    color: #787878;
+}
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation0.MuiAlert-root.MuiAlert-standardSuccess.MuiAlert-standard.css-lxtrdt-MuiPaper-root-MuiAlert-root {
+    background: #4caf50;
+    color: white;
+}
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation0.MuiAlert-root.MuiAlert-standardError.MuiAlert-standard.css-1n06azt-MuiPaper-root-MuiAlert-root {
+    background: mistyrose;
+}
