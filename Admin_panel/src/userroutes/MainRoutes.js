@@ -91,7 +91,7 @@ const MainRoutes = {
         {
             path: '/dashboard/result/detail/:id',
             element: <ResultDetail />
-        },
+        }
     ]
 };
 

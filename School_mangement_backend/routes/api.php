@@ -5,8 +5,7 @@ use App\Http\Controllers\AttendanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UserController;
-use App\Http\Controllers\Auth\AdminController;
-use App\Http\Controllers\Auth\AdminResetPassword;
+use App\Http\Controllers\Auth\UserResetPassword;
 use App\Http\Controllers\ClassNameController;
 use App\Http\Controllers\ClassnamedController;
 use App\Http\Controllers\FeeController;
@@ -31,18 +30,6 @@ use App\Models\Appointment;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::group([
-
-    'middleware' => 'api',
-    'prefix' => 'auth'
-
-], function ($router) {
-    Route::post('/register', [AdminController::class, 'adminregister'])->name('user.index');
-    Route::post('/login', [AdminController::class, 'adminlogin'])->name('user.index');
-    Route::post('/logout', [AdminController::class, 'logout'])->name('user.index');
-    Route::post('/me', [AdminController::class, 'me'])->name('user.index');
-});
-
 // Route::prefix('admin')->controller(AdminController::class)->group(function () {
 
 //     Route::post('login', 'login');
@@ -65,8 +52,8 @@ Route::prefix('admin')->controller(UserController::class)->group(function () {
     });
 });
 Route::prefix('admin')->group(function () {
-    Route::post('send-reset-password-email', [AdminResetPassword::class, 'send_password_email']);
-    Route::post('reset-password/{token}', [AdminResetPassword::class, 'password_reset']);
+    Route::post('send-reset-password-email', [UserResetPassword::class, 'send_reset_password_email']);
+    Route::post('reset-password/{token}', [UserResetPassword::class, 'reset']);
     Route::resource('attendance', AttendanceController::class);
     Route::resource('appointment',AppointmentController ::class);
     Route::resource('teacher', TeacherController::class);

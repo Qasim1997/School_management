@@ -18,11 +18,17 @@ import Select from 'react-select';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAddParantMutation, useAddStudentMutation, useAddSubjectMutation, useEditClassDataMutation, useGetTeacherAllQuery } from 'services/userAuthApi';
+import {
+    useAddParantMutation,
+    useAddStudentMutation,
+    useAddSubjectMutation,
+    useEditClassDataMutation,
+    useGetTeacherAllQuery
+} from 'services/userAuthApi';
 import axios, { Axios } from 'axios';
 import { getToken } from 'services/LocalStorage';
 import { Value } from 'sass';
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from 'react-select/async';
 
 function AddParant() {
     // ===============================|| SHADOW BOX ||=============================== //
@@ -101,26 +107,23 @@ function AddParant() {
     }, []);
     const token = getToken();
     // get Student
-    const [selectedStudentValue, setselectedStudentValue] = useState(null)
+    const [selectedStudentValue, setselectedStudentValue] = useState(null);
 
     // handle selection
-    const handleClassChange = value => {
-        setselectedStudentValue(value)
-    }
+    const handleClassChange = (value) => {
+        setselectedStudentValue(value);
+    };
     // load options using API call
     const loadClassOptions = async () => {
-        const res = await axios.get(
-            `${process.env.REACT_APP_API_PATH}/admin/student`,
-            {
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
+        const res = await axios.get(`${process.env.REACT_APP_API_PATH}/admin/student`, {
+            headers: {
+                authorization: `Bearer ${token}`
             }
-        )
-        console.log(res, 'res')
-        const re = res.data.result
-        return re
-    }
+        });
+        console.log(res, 'res');
+        const re = res.data.result;
+        return re;
+    };
 
     const [selectedclassOption, setSelectedclassOption] = useState('');
 
@@ -132,7 +135,7 @@ function AddParant() {
                 name: data.name,
                 email: data.email,
                 contact_number: data.contact_number,
-                student_id: selectedStudentValue.id,
+                student_id: selectedStudentValue.id
             },
             'ddddddddddddd'
         );
@@ -140,14 +143,9 @@ function AddParant() {
             name: data.name,
             email: data.email,
             contact_number: data.contact_number,
-            student_id: selectedStudentValue.id,
+            student_id: selectedStudentValue.id
         };
-        if (
-            Actual_data.name &&
-            Actual_data.email &&
-            Actual_data.contact_number &&
-            Actual_data.student_id
-        ) {
+        if (Actual_data.name && Actual_data.email && Actual_data.contact_number && Actual_data.student_id) {
             const res = await addParant({ token, Actual_data });
             console.log(res, 'res');
             if (res.data.status === 'success') {
@@ -239,11 +237,12 @@ function AddParant() {
                                     cacheOptions
                                     defaultOptions
                                     value={selectedStudentValue}
-                                    getOptionLabel={e => e.display_name}
-                                    getOptionValue={e => e.id}
+                                    getOptionLabel={(e) => e.display_name}
+                                    getOptionValue={(e) => e.id}
                                     loadOptions={loadClassOptions}
                                     onChange={handleClassChange}
-                                />                               </div>
+                                />{' '}
+                            </div>
                             <div className="col-12">
                                 <Button type="submit" variant="contained" style={{ color: 'black' }}>
                                     Save

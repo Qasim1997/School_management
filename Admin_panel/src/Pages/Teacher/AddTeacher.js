@@ -96,7 +96,7 @@ function AddTeacher() {
             label: data.label
         };
         // if (ActualData.label) {
-        const res = await addTeacher({token, ActualData });
+        const res = await addTeacher({ token, ActualData });
         console.log(res.data.status, 'res');
         if (res.data.status === 'success') {
             console.log('first');

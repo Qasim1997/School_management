@@ -1,44 +1,31 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { styled } from '@mui/material/styles';
-import {
-    Link,
-    Container,
-    Typography,
-    Divider,
-    Stack,
-    Button,
-    IconButton,
-    InputAdornment,
-    input,
-    Checkbox,
-    Box,
-    Alert
-} from '@mui/material';
+import { Container, Typography, Divider, Button, Box, Alert } from '@mui/material';
 // hooks
 // components
 // sections
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 // @mui
-import { LoadingButton } from '@mui';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { useQuery, useMutation } from 'react-query';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Iconify from '../../ui-component/iconify';
 import Logo from '../../ui-component/Logo';
 import useResponsive from '../../hooks/useResponsive';
-import { useSignupAdmin } from 'Service/Signup';
+import { useSignupUser } from 'Service/Signup';
+import Select from 'react-select';
+import { getToken } from 'services/LocalStorage';
+import { useRegisterUserMutation } from 'services/userAuthApi';
 import AsyncSelect from 'react-select/async';
+import styled from 'styled-components';
 // components
 // ----------------------------------------------------------------------
 
-function Signup() {
+function UserSignup() {
     // alert(useAddSigninData());
     // const {useAddSigninData} = useAddSigninData();
 
@@ -76,11 +63,12 @@ function Signup() {
     // validation
     const formSchema = Yup.object().shape({
         name: Yup.string().required(),
+        user_type: Yup.string().required(),
         email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
         password: Yup.string().required('Password is required').min(3, 'Password must be at 3 char long'),
         password_confirmation: Yup.string()
-            .required('Password is required')
-            .oneOf([Yup.ref('password')], 'Passwords does not match')
+            .required('Confirmed Password is required')
+            .oneOf([Yup.ref('password')], 'Confirmed Password does not match')
     });
     const formOptions = { resolver: yupResolver(formSchema) };
     const {
@@ -101,11 +89,13 @@ function Signup() {
         msg: '',
         type: ''
     });
-    const { mutateAsync: signup, isError, error } = useSignupAdmin();
+    const { mutateAsync: signup, isError, error } = useSignupUser();
     const handleClick = () => {
         navigate('/app', { replace: true });
     };
+
     // get teacher
+    const [inputValue, setValue] = useState('');
     const [selectedValue, setSelectedValue] = useState('');
 
     // handle selection
@@ -143,22 +133,57 @@ function Signup() {
         const re = res.data.result;
         return re;
     };
+    // submit data
+    const [registerUser] = useRegisterUserMutation();
     const onSubmit = async (data) => {
-        await axios;
-        signup(data)
-            .then((response) => {
-                console.log(response, 'response');
-                setError({ status: true, msg: response.data.status, type: 'success' });
-                document.getElementById('formid').reset();
-                navigate('/login');
-
-                // history.push("/product/4");
-            })
-            .catch((error) => {
-                console.log(error, 'fetch error');
-                // seterror(error.response.data.error)
-                // setError({ status: true, msg: error.response.data.message, type: 'error' });
+        console.log(data, 'data');
+        console.log(selectedValue, 'selectedOption');
+        console.log(selectedstudentValue, 'selectedOption');
+        const ActualData = {
+            name: data.name,
+            user_type: data.user_type,
+            teacher_id: selectedValue.id,
+            student_id: selectedstudentValue.id,
+            email: data.email,
+            password: data.password,
+            password_confirmation: data.password_confirmation
+        };
+        console.log(ActualData, 'ActualData');
+        if (ActualData.teacher_id && ActualData.student_id) {
+            setError({
+                status: true,
+                msg: 'Choose Only One Field From Student and Teacher',
+                type: 'error'
             });
+        } else {
+            const res = await registerUser(ActualData);
+            console.log(res, 'res');
+            if (res.data.status === 'success') {
+                console.log('first');
+                setError({ status: true, msg: res.data.message, type: 'success' });
+                document.getElementById('formid').reset();
+                navigate('/dashboard/user');
+            } else {
+                setSelectedOption('');
+                setOptions('');
+                setError({ status: true, msg: res.data.message, type: 'error' });
+            }
+            // await axios;
+            // signup(ActualData)
+            //     .then((response) => {
+            //         console.log(response, 'response');
+            //         setError({ status: true, msg: response.data.status, type: 'success' });
+            //         document.getElementById('formid').reset();
+            //         // window.close();
+            //         navigate('/dashboard/user');
+            //         // history.push("/product/4");
+            //     })
+            //     .catch((error) => {
+            //         console.log(error, 'fetch error');
+            //         // seterror(error.response.data.error)
+            //         setError({ status: true, msg: error.response.data.message, type: 'error' });
+            //     });
+        }
     };
 
     return (
@@ -230,6 +255,7 @@ function Signup() {
                                 onChange={handleChange}
                             />{' '}
                             <br />
+                            selectedstudentValue
                             <Form.Label>Student</Form.Label>
                             <AsyncSelect
                                 cacheOptions
@@ -276,19 +302,10 @@ function Signup() {
                                 <a href="/login">Login</a>
                             </p>
                         </form>
-                        <AsyncSelect
-                            cacheOptions
-                            defaultOptions
-                            value={selectedValue}
-                            getOptionLabel={(e) => e.label}
-                            getOptionValue={(e) => e.id}
-                            loadOptions={loadOptions}
-                            onChange={handleChange}
-                        />
                     </StyledContent>
                 </Container>
             </StyledRoot>
         </>
     );
 }
-export default Signup;
+export default UserSignup;

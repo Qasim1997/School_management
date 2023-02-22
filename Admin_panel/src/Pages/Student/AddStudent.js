@@ -22,7 +22,7 @@ import { useAddStudentMutation, useAddSubjectMutation, useEditClassDataMutation,
 import axios from 'axios';
 import { getToken } from 'services/LocalStorage';
 import { Value } from 'sass';
-import AsyncSelect from 'react-select/async'
+import AsyncSelect from 'react-select/async';
 function AddStudent() {
     // ===============================|| SHADOW BOX ||=============================== //
 
@@ -103,26 +103,23 @@ function AddStudent() {
         getData();
     }, []);
     // get Class
-    const [selectedClassValue, setSelectedClassValue] = useState(null)
+    const [selectedClassValue, setSelectedClassValue] = useState(null);
 
     // handle selection
-    const handleClassChange = value => {
-        setSelectedClassValue(value)
-    }
+    const handleClassChange = (value) => {
+        setSelectedClassValue(value);
+    };
     // load options using API call
     const loadClassOptions = async () => {
-        const res = await axios.get(
-            `${process.env.REACT_APP_API_PATH}/admin/class`,
-            {
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
+        const res = await axios.get(`${process.env.REACT_APP_API_PATH}/admin/class`, {
+            headers: {
+                authorization: `Bearer ${token}`
             }
-        )
-        console.log(res, 'res')
-        const re = res.data.result
-        return re
-    }
+        });
+        console.log(res, 'res');
+        const re = res.data.result;
+        return re;
+    };
 
     const [selectedclassOption, setSelectedclassOption] = useState('');
 
@@ -162,7 +159,7 @@ function AddStudent() {
             formdata.append('age', data.age),
             formdata.append('address', data.address),
             formdata.append('contact_number', data.contact_number),
-            formdata.append('classnamed_id', selectedclassOption.id),
+            formdata.append('classnamed_id', selectedClassValue.id),
             formdata.append('image', images),
             formdata.append('rollnumber', data.rollnumber);
         if (
@@ -287,8 +284,8 @@ function AddStudent() {
                                     cacheOptions
                                     defaultOptions
                                     value={selectedClassValue}
-                                    getOptionLabel={e => e.name}
-                                    getOptionValue={e => e.id}
+                                    getOptionLabel={(e) => e.name}
+                                    getOptionValue={(e) => e.id}
                                     loadOptions={loadClassOptions}
                                     onChange={handleClassChange}
                                 />

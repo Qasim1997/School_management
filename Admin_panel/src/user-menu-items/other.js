@@ -29,8 +29,7 @@ const other = {
                     type: 'item',
                     url: '/user/attendance/status',
                     breadcrumbs: false
-                },
-
+                }
             ]
         },
         {
@@ -54,7 +53,7 @@ const other = {
                     breadcrumbs: false
                 }
             ]
-        },
+        }
     ]
 };
 

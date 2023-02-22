@@ -18,8 +18,7 @@ const dashboard = {
             url: '/dashboard',
             icon: icons.IconDashboard,
             breadcrumbs: false
-        },
-        
+        }
     ]
 };
 
